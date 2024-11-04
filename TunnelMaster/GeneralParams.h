@@ -3,9 +3,9 @@
 
 #include "GeneralUtils.h"
 
-#define SERIAL_BAUDRATE 115200
-#define RS485_BAUDRATE 115200
-#define REDPIN 7
+#define SERIAL_BAUDRATE 9600
+#define RS485_BAUDRATE 9600
+#define REDPIN 44
 #define RS485_MASTER_ADDR 100
 #define RS485_SLAVE_ADDR 101
 
@@ -22,17 +22,18 @@ AltSoftSerial altSerial;
 
 int joystickLeftY = 0;
 int joystickRightX = 0;
+
 int leftMotorPWM = 0;
-int leftMotorDir = 0;
+uint8_t leftMotorDir = FORWARD;
 int rightMotorPWM = 0;
-int rightMotorDir = 0;
+uint8_t rightMotorDir = BACKWARD;
 
 typedef struct __attribute__((packed)) ReqPacket {
 	
-  byte leftMotorDir;
-  uint8_t leftMotorPWM;
-  byte rightMotorDir;
-  uint8_t rightMotorPWM;
+  uint8_t leftMotorDir;
+  int leftMotorPWM;
+  uint8_t rightMotorDir;
+  int rightMotorPWM;
   
 } ReqPacket;
 

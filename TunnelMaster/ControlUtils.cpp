@@ -1,6 +1,6 @@
 #include "ControlUtils.h"
 
-int calcMotorDir(int joystickVal) {
+MotorDir calcMotorDir(int joystickVal) {
   
   if (joystickVal > 0)
     return FORWARD;
@@ -49,9 +49,9 @@ void processSteer(int joystickRightX,
 void calcMotorSetpoint(int joystickRightX,
                        int joystickLeftY,
                        int& rightMotorSpeed,
-                       int& rightMotorDir, 
+                       uint8_t& rightMotorDir, 
                        int& leftMotorSpeed,
-                       int& leftMotorDir) {
+                       uint8_t& leftMotorDir) {
 
     if (joystickLeftY > JOYSTICK_DEAD_BAND) {  // Forward
         rightMotorDir = FORWARD;
@@ -89,6 +89,9 @@ void calcMotorSetpoint(int joystickRightX,
             leftMotorSpeed = 0;
         }
     }
+
+  rightMotorSpeed = max(2 * rightMotorSpeed - 1, 0);
+  leftMotorSpeed  = max(2 * leftMotorSpeed - 1, 0);
 }
 
 

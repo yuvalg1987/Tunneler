@@ -8,4 +8,9 @@
 
 #include "lf310.h"
 
+enum MotorDir {
+  BACKWARD,  // 0
+  FORWARD, // 1
+};
+
 #endif

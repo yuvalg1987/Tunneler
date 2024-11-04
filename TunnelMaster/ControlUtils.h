@@ -5,12 +5,7 @@
 
 #define JOYSTICK_DEAD_BAND 10
 
-enum MOTOR_DIR {
-  BACKWARD,  // 0
-  FORWARD, // 1
-};
-
-int calcMotorDir(int joystickVal);
+MotorDir calcMotorDir(int joystickVal);
 
 void preprocessJoystickVals(uint8_t rightXOrig,
                             uint8_t leftYOrig, 
@@ -25,9 +20,9 @@ void processSteer(int joystickRightX,
 void calcMotorSetpoint(int joystickRightX,
                        int joystickLeftY,
                        int& rightMotorSpeed,
-                       int& rightMotorDir, 
+                       uint8_t& rightMotorDir, 
                        int& leftMotorSpeed,
-                       int& leftMotorDir);
+                       uint8_t& leftMotorDir);
 
 
 #endif

@@ -8,7 +8,7 @@
 
 void sendReq(int addr, ReqPacket currPaecket) {
   uint8_t* currBytes = (byte*)&currPaecket;
-  rs485.send(addr, sizeof(float), currBytes);
+  rs485.send(addr, sizeof(currPaecket), currBytes);
 }
 
 
@@ -27,9 +27,9 @@ void setup() {
         if (Usb.Init() == -1)
                 Serial.println("OSC did not start.");
                 
-        // Set this to higher values to enable more debug information
-        // minimum 0x00, maximum 0xff, default 0x80
-        // UsbDEBUGlvl = 0xff;
+        // // Set this to higher values to enable more debug information
+        // // minimum 0x00, maximum 0xff, default 0x80
+        // // UsbDEBUGlvl = 0xff;
 
         delay(200);
         Serial.println("Ready. Addr " + String(RS485_MASTER_ADDR));
@@ -40,8 +40,8 @@ void setup() {
 
 void loop() {
 
-    Usb.Task();
     rs485.loop();
+    Usb.Task();
 
     if (lf310.connected()) {
 
@@ -76,4 +76,6 @@ void loop() {
       delay(100);
 
     }
+
+
 }

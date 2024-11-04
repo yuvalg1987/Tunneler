@@ -2,8 +2,8 @@
 #include <AltSoftSerial.h>
 
 #define BAUDRATE 9600
-#define RS485_ADDR 101
 #define RS485_MASTER_ADDR 100
+#define RS485_SLAVE_ADDR 101
 #define REDEPIN 7
 
 #define M1_PWM 3
@@ -14,16 +14,20 @@
 #define M2_IN1 11
 #define M2_IN2 12
 
+enum MotorDir {
+  BACKWARD,  // 0
+  FORWARD, // 1
+};
 
 Simple485 rs485;
-AltSoftSerial softwareSerial;
+AltSoftSerial altSerial;
 
 typedef struct __attribute__((packed)) ReqPacket {
 	                  
-  byte leftMotorDir;
-  uint8_t leftMotorPWM;
-  byte rightMotorDir;
-  uint8_t rightMotorPWM;
+  uint8_t leftMotorDir;
+  int leftMotorPWM;
+  uint8_t rightMotorDir;
+  int rightMotorPWM;
   
 } ReqPacket;
 
@@ -42,6 +46,16 @@ ReqPacket parseInput(byte* bytes, int arrLen) {
   return currReq;
 }
 
+void M1MoveMotor(int motorSpeed, uint8_t motorDir) {
+
+  if (motorDir == FORWARD) {
+    M1MoveForward(motorSpeed);
+  }
+  else {
+    M1MoveBackward(motorSpeed);
+  }
+}
+
 
 void M1MoveForward(int motorSpeed){  
   
@@ -51,6 +65,16 @@ void M1MoveForward(int motorSpeed){
 
 }
 
+void M2MoveMotor(int motorSpeed, uint8_t motorDir) {
+
+  if (motorDir == FORWARD) {
+    M2MoveForward(motorSpeed);
+  }
+  else {
+    M2MoveBackward(motorSpeed);
+  }
+
+}
 void M2MoveForward(int motorSpeed){  
   
     digitalWrite (M2_IN1, HIGH);
@@ -130,19 +154,17 @@ void setup() {
   init_pinout();
 
   Serial.begin(BAUDRATE);
-  softwareSerial.begin(BAUDRATE);
+  altSerial.begin(BAUDRATE);
 
-  rs485 = Simple485(&softwareSerial, RS485_ADDR, REDEPIN);
-  Serial.println("RS485 Ready. Addr " + String(RS485_ADDR));
+  rs485 = Simple485(&altSerial, RS485_SLAVE_ADDR, REDEPIN);
+  Serial.println("RS485 Ready. Addr " + String(RS485_SLAVE_ADDR));
 
-
-  // waitForMasterBoot();
 }
 
 
 
 void loop() {
- 
+
   // Serial.println("Forward");
   // M1MoveForward(50);
   // M2MoveForward(50);
@@ -182,7 +204,13 @@ void loop() {
                    " rightMotorDir = " + String(currReq.rightMotorDir));
 
     delete [] m.bytes;
+
+    M1MoveMotor(currReq.leftMotorPWM, currReq.leftMotorDir);
+    M2MoveMotor(currReq.rightMotorPWM, currReq.rightMotorDir);
   }
 
-  delay(20);
+  // M1MoveMotor(currReq.leftMotorPWM, currReq.leftMotorDir);
+  // M2MoveMotor(currReq.rightMotorPWM, currReq.rightMotorDir);
+
+  // delay(20);
 }
